@@ -43,7 +43,7 @@ public class MovieCatalogResource {
 				//						  				  .retrieve()
 				//						  				  .bodyToMono(Movie.class)
 				//						  				  .block();
-										  return new CatalogItem(movie.getName(), "Test", rating.getRating());
+										  return new CatalogItem(movie.getTitle(), movie.getOverview(), rating.getRating());
 										  
 									   })
 									  .collect(Collectors.toList());
