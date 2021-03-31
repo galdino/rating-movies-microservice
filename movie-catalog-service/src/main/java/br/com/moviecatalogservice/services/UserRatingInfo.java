@@ -18,13 +18,19 @@ public class UserRatingInfo {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	@HystrixCommand(fallbackMethod = "getFallbackUserRating", 
-					commandProperties = {
-		                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000"),
-		                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "5"),
-		                    @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "50"),
-		                    @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "5000"),
-		            })
+	@HystrixCommand(fallbackMethod = "getFallbackUserRating",
+					threadPoolKey = "userRatingInfoPool",
+					threadPoolProperties = {
+							@HystrixProperty(name = "coreSize", value = "20"),
+		                    @HystrixProperty(name = "maxQueueSize", value = "10")
+					}
+//					commandProperties = {
+//		                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000"),
+//		                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "5"),
+//		                    @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "50"),
+//		                    @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "5000"),
+//		            }
+					)
 	public UserRating getUserRating(String userId) {
 		return restTemplate.getForObject("http://rating-data-service/ratingsdata/users/" + userId, UserRating.class);
 	}
